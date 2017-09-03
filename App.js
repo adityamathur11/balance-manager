@@ -54,5 +54,5 @@ function connectDB() {
             }
         }
     };
-    return mongoose.connect(config.db , {}).connection;
+    return mongoose.connect(config.db , options).connection;
 }

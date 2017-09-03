@@ -4,7 +4,7 @@
 var route = require('express').Router();
 var User = require('../../models/User/User');
 
-route.get('/user/:id', function (req, res) {
+route.get('/users/:id', function (req, res) {
     User.findOne({_id : req.params.id}, function (err , user1) {
         var user = Object.assign({}, user1._doc);
         if(err) {
@@ -26,6 +26,19 @@ route.get('/user/:id', function (req, res) {
             })
         }
     })
+});
+
+route.get('/users',function (req, res) {
+    var skip = req.query.skip ? parseInt(req.query.skip) : 0;
+    var limit = req.query.limit ? parseInt(req.query.limit) : 10;
+
+    User.find()
+        .select(["first_name", "last_name" , "email", "phone_number"])
+        .skip(skip)
+        .limit(limit)
+        .exec(function (err , users) {
+            res.json(users);
+        })
 });
 
 module.exports = route;
