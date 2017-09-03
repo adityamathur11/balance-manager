@@ -1,0 +1,20 @@
+{
+  "name": "balance-manager",
+  "homepage": "https://github.com/adityamathur11/balance-manager",
+  "authors": [
+    "adityamathur11 <aditya.mathur2012@vit.ac.in>"
+  ],
+  "description": "",
+  "main": "App.js",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "^1.6.6"
+  }
+}

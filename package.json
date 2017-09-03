@@ -1,0 +1,30 @@
+{
+  "name": "balance-manager",
+  "version": "1.0.0",
+  "description": "",
+  "main": "App.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "set NODE_ENV=dev&&node App.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/adityamathur11/balance-manager.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/adityamathur11/balance-manager/issues"
+  },
+  "homepage": "https://github.com/adityamathur11/balance-manager#readme",
+  "dependencies": {
+    "bcrypt": "^1.0.3",
+    "body-parser": "^1.17.2",
+    "config": "^1.26.2",
+    "express": "^4.15.4",
+    "jsonwebtoken": "^7.4.3",
+    "mongoose": "^4.11.9",
+    "passport": "^0.4.0",
+    "passport-jwt": "^3.0.0"
+  }
+}
