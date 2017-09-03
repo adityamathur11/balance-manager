@@ -1,0 +1,30 @@
+{
+  "first_name" : {
+    "type" : "string",
+    "required" : true
+  },
+  "last_name" : {
+    "type" : "string",
+    "required" : true
+  },
+  "email" : {
+    "type" : "string",
+    "required" : true
+  },
+  "password" : {
+    "type" : "string",
+    "required" : true
+  },
+  "phone_number" : {
+    "type" : "string",
+    "required" : true
+  },
+  "created_at" : {
+    "type" : "Date",
+    "required" : false
+  },
+  "updated_at" : {
+    "type" : "Date",
+    "required" : false
+  }
+}

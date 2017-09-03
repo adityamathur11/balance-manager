@@ -6,7 +6,10 @@ var express = require('express')
     ,config = require('config')
     ,bodyParser = require('body-parser')
     ,passport = require('passport');
+mongoose.Promise = global.Promise;
 
+var loginAPIs = require('./APIs/controllers/public/login');
+var publicRouter = express.Router();
 
 var app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -14,6 +17,9 @@ app.use(bodyParser.json());
 app.use(passport.initialize());
 require('./APIs/authentication/Passport')(passport);
 
+
+app.use('/API', publicRouter);
+app.use('/',loginAPIs);
 const PORT = process.env.port || 1000;
 
 connectDB()
