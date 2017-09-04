@@ -12,9 +12,11 @@ mongoose.Promise = global.Promise;
 
 var loginAPIs = require('./APIs/controllers/public/login');
 var privateUserAPIs = require('./APIs/controllers/private/User.controller');
+var privateCategoryAPIs = require('./APIs/controllers/private/Category.controller');
 
 var privateRouter = express.Router();
 privateRouter.use('/private', privateUserAPIs);
+privateRouter.use('/private', privateCategoryAPIs);
 
 var publicRouter = express.Router();
 

@@ -5,9 +5,11 @@ var fs = require('fs');
 
 module.exports = {
     validateInputs : function (model, inputParams) {
+
         for(key in model){
             if(model[key].required){
-                if(inputParams[key] === undefined){
+                if(inputParams[key] === undefined
+                    || typeof(inputParams[key]) !== model[key].type){
                     return false;
                 }
             }
@@ -33,7 +35,8 @@ module.exports = {
     getPostObject : function (model, inputParams) {
         var newObj = {};
         for(key in model){
-            if(inputParams[key]){
+
+            if(inputParams[key] !== undefined){
                 newObj[key] = inputParams[key];
             }
         }
