@@ -16,11 +16,11 @@
     "required" : true
   },
   "created_at" : {
-    "type" : "Date",
+    "type" : "object",
     "required" : false
   },
   "updated_at" : {
-    "type" : "Date",
+    "type" : "object",
     "required" : false
   }
 }

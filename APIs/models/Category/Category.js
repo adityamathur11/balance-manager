@@ -22,10 +22,12 @@ var CategorySchema = new Schema({
             required : false
         },
         created_at: {
-            type : Date
+            type : Date,
+            required : false
         },
         updated_at: {
-            type : Date
+            type : Date,
+            required : false
         }
     },
     {

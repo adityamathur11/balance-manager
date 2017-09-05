@@ -1,0 +1,18 @@
+{
+  "name" : {
+    "type" : "string",
+    "required" : true
+  },
+  "user" : {
+    "type" : "string",
+    "required" : true
+  },
+  "created_at": {
+    "type" : "object",
+    "required" : false
+  },
+  "updated_at": {
+    "type" : "object",
+    "required" : false
+  }
+}

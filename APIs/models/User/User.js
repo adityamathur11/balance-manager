@@ -24,10 +24,12 @@ var UserSchema = new Schema({
             required : true
         },
         created_at: {
-            type : Date
+            type : Date,
+            required : false
         },
         updated_at: {
-            type : Date
+            type : Date,
+            required : false
         }
     },
     {

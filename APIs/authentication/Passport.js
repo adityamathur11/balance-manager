@@ -4,7 +4,8 @@
 var JwtStrategy = require('passport-jwt').Strategy
     ,ExtractJwt = require('passport-jwt').ExtractJwt
     ,config = require('config');
-
+// require('')
+console.log('NODE_ENV: ' + config.util.getEnv('NODE_ENV'));
 var User = require('../models/User/User');
 
 var opts = {};

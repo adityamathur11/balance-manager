@@ -20,10 +20,7 @@ route.get('/users/:id', function (req, res) {
         } else{
             delete user.password;
             delete user.phone_number;
-            res.json({
-                message : "success",
-                data : user
-            })
+            res.json(user)
         }
     })
 });
@@ -37,6 +34,10 @@ route.get('/users',function (req, res) {
         .skip(skip)
         .limit(limit)
         .exec(function (err , users) {
+            if(err){
+                res.status(500)
+                res.json({message : "Internal server error"});
+            }
             res.json(users);
         })
 });
