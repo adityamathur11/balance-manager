@@ -40,9 +40,10 @@ app.use('/',loginAPIs);
 const PORT = process.env.PORT || 1000;
 
 
-app.get('/' , function (req,res) {
-    res.json({message : "Welcome Aditya!"});
-})
+app.use(function(req, res, next) {
+    res.status(400);
+    res.json({message : "404! Page not found"});
+});
 
 connectDB()
     .on('error' , function () {
