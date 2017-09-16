@@ -1,30 +1,35 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
+var User = require('../User/User');
+var Category = require('../Category/Category');
 
 var TransactionSchema = new Schema({
         amount : {
-            type : String,
+            type : Number,
             required : true
         },
-        user : {
-            type : String,
+        User : {
+            type: Schema.Types.ObjectId,
+            ref: 'User',
             required : true
         },
-        category : {
-            type : String,
-            required : true
-        },
-        tags : {
-            type : Array,
+        Category : {
+            type: Schema.Types.ObjectId,
+            ref: 'Category',
             required : true
         },
         remarks : {
             type : String,
-            required : true
+            required : false
         },
         type : {
-            type : Number,
-            required : true
+            type : String,
+            enum: ['CREDIT', 'DEBIT', 'LEDGER', 'DEPOSIT'],
+            default : 'DEBIT'
+        },
+        Tags : {
+            type : [{type : Schema.Types.ObjectId , ref : 'Tags'}],
+            required : false
         },
         created_at: {
             type : Date,
@@ -53,4 +58,16 @@ TransactionSchema.pre('update', function(next) {
     next();
 });
 
-module.exports = mongoose.model('Tags' , TransactionSchema);
+module.exports = mongoose.model('Transaction' , TransactionSchema);
+
+
+/*
+ ,
+
+ ,
+ user : {
+ type : {type: Schema.Types.ObjectId, ref: User.schema},
+ required : true
+ },
+
+ */

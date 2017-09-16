@@ -1,27 +1,30 @@
 {
   "amount" : {
+    "type" : "number",
+    "required" : true
+  },
+  "User" : {
     "type" : "string",
     "required" : true
   },
-  "user" : {
+  "Category" : {
     "type" : "string",
     "required" : true
   },
-  "category" : {
-    "type" : "string",
-    "required" : true
-  },
-  "tags" : {
-    "type" : "array",
+  "Tags" : {
+    "type" : "object",
+    "primitive_type" : "array",
+    "element_type" : "string",
+    "unique" : true,
     "required" : true
   },
   "remarks" : {
     "type" : "string",
-    "required" : true
+    "required" : false
   },
   "type" : {
     "type" : "number",
-    "required" : true
+    "required" : false
   },
   "created_at": {
     "type" : "object",

@@ -50,7 +50,7 @@ router.get('/category',function (req, res) {
     var skip = req.query.skip ? parseInt(req.query.skip) : 0;
     var limit = req.query.limit ? parseInt(req.query.limit) : 10;
 
-    Category.find()
+    Category.find({user : req.user._id})
         .skip(skip)
         .limit(limit)
         .exec(function (err , categories) {

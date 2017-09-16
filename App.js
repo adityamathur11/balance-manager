@@ -14,11 +14,13 @@ var loginAPIs = require('./APIs/controllers/public/login');
 var privateUserAPIs = require('./APIs/controllers/private/User.controller');
 var privateCategoryAPIs = require('./APIs/controllers/private/Category.controller');
 var privateTagAPIs = require('./APIs/controllers/private/Tag.controller');
+var privateTransactionAPIs = require('./APIs/controllers/private/Transaction.controller');
 
 var privateRouter = express.Router();
 privateRouter.use('/private', privateUserAPIs);
 privateRouter.use('/private', privateCategoryAPIs);
 privateRouter.use('/private', privateTagAPIs);
+privateRouter.use('/private', privateTransactionAPIs);
 
 var publicRouter = express.Router();
 
@@ -35,8 +37,12 @@ app.use('/API', publicRouter);
 app.use('/API',passport.authenticate('jwt', {session : false} ) ,privateRouter);
 
 app.use('/',loginAPIs);
-const PORT = process.env.port || 3000;
+const PORT = process.env.PORT || 1000;
 
+
+app.get('/' , function (req,res) {
+    res.json({message : "Welcome Aditya!"});
+})
 
 connectDB()
     .on('error' , function () {
