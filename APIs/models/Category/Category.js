@@ -5,8 +5,9 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var CategorySchema = new Schema({
-        user : {
-            type : String,
+        User : {
+            type : Schema.Types.ObjectId,
+            ref : 'User',
             required : true
         },
         name : {
@@ -14,12 +15,13 @@ var CategorySchema = new Schema({
             required : true
         },
         type : {
-            type : Number,
+            type : String,
+            enum : ["MONEY", "SPEND"],
             required : true
         },
         resolvable : {
             type : Boolean,
-            required : false
+            default : false
         },
         created_at: {
             type : Date,

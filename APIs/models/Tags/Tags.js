@@ -6,7 +6,7 @@ var TagsSchema = new Schema({
         type : String,
         required : true
     },
-    user : {
+    User : {
         type : String,
         required : true
     },

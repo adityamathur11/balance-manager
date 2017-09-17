@@ -7,14 +7,14 @@ var util = require('../../utils/util');
 
 router.post('/tag', function (req, res) {
     var postData = Object.assign({}, req.body);
-    postData.user = req.user.id;
+    postData.User = req.user.id;
     postData.name = postData.name.toString().trim().toLowerCase();
     util.getModel('Tags')
         .then(function (model) {
             if(util.validateInputs(model, postData)){
                 Tag.findOne({
                     name : postData.name,
-                    user : req.user._id
+                    User : req.user._id
                 }, function (err, tag) {
                     if(tag){
                         res.status(409);
@@ -59,6 +59,24 @@ router.get('/tag',function (req, res) {
                 res.json({message : "Internal server error"});
             }
             res.json(tags);
+        })
+});
+
+
+router.get('/tag/:id',function (req, res) {
+    Tag.findOne({User : req.user._id, _id : req.params.id})
+        .exec(function (err , tag) {
+            if(err){
+                res.status(500)
+                res.json({message : "Internal server error"});
+            }
+            if(tag) {
+                res.json(tag);
+            } else {
+                res.status(404)
+                res.json({message : "Resource not found"});
+            }
+
         })
 });
 

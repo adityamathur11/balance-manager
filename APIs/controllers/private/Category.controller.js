@@ -7,14 +7,14 @@ var util = require('../../utils/util');
 
 router.post('/category', function (req, res) {
     var postData = Object.assign({}, req.body);
-    postData.user = req.user.id;
+    postData.User = req.user.id;
     postData.name = postData.name.toString().trim().toLowerCase();
     util.getModel('Category')
         .then(function (model) {
             if(util.validateInputs(model, postData)){
                 Category.findOne({
                     name : postData.name,
-                    user : req.user._id
+                    User : req.user._id
                 }, function (err, category) {
                     if(category){
                         res.status(409);
@@ -27,7 +27,7 @@ router.post('/category', function (req, res) {
                                 res.status(500);
                                 res.json({"message" : err})
                             } else {
-                                res.json({"message" : "success"});
+                                res.json({"message" : category});
                             }
                         })
                     }
@@ -50,7 +50,7 @@ router.get('/category',function (req, res) {
     var skip = req.query.skip ? parseInt(req.query.skip) : 0;
     var limit = req.query.limit ? parseInt(req.query.limit) : 10;
 
-    Category.find({user : req.user._id})
+    Category.find({User : req.user._id})
         .skip(skip)
         .limit(limit)
         .exec(function (err , categories) {
@@ -59,6 +59,24 @@ router.get('/category',function (req, res) {
                 res.json({message : "Internal server error"});
             }
             res.json(categories);
+        })
+});
+
+
+router.get('/category/:id',function (req, res) {
+    Category.findOne({User : req.user._id, _id : req.params.id})
+        .exec(function (err , category) {
+            if(err){
+                res.status(500)
+                res.json({message : "Internal server error"});
+            }
+            if(category) {
+                res.json(category);
+            } else {
+                res.status(404)
+                res.json({message : "Resource not found"});
+            }
+
         })
 });
 

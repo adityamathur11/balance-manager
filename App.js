@@ -41,8 +41,8 @@ const PORT = process.env.PORT || 1000;
 
 
 app.use(function(req, res, next) {
-    res.status(400);
-    res.json({message : "404! Page not found"});
+    res.status(404);
+    res.json({message : "404! Resource not found"});
 });
 
 connectDB()

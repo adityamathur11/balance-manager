@@ -13,10 +13,7 @@ route.get('/users/:id', function (req, res) {
         }
         if(user._id.toString() === req.user._id.toString()) {
             delete user.password;
-            res.json({
-                message: "success",
-                data: user
-            });
+            res.json(user);
         } else{
             delete user.password;
             delete user.phone_number;

@@ -1,5 +1,5 @@
 {
-  "user" : {
+  "User" : {
     "type" : "string",
     "required" : true
   },
@@ -8,12 +8,12 @@
     "required" : true
   },
   "type" : {
-    "type" : "number",
+    "type" : "string",
     "required" : true
   },
   "resolvable" : {
     "type" : "boolean",
-    "required" : true
+    "required" : false
   },
   "created_at" : {
     "type" : "object",
