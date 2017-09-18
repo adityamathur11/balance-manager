@@ -25,7 +25,8 @@ privateRouter.use('/private', privateTransactionAPIs);
 var publicRouter = express.Router();
 
 var app = express();
-
+app.use(express.static(__dirname + '/public'));
+app.use('/bower_components', express.static(__dirname + '/bower_components'));
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -34,15 +35,21 @@ app.use(passport.initialize());
 require('./APIs/authentication/Passport')(passport);
 
 app.use('/API', publicRouter);
-app.use('/API',passport.authenticate('jwt', {session : false} ) ,privateRouter);
+app.use('/API', function (req, res, next) {
+    passport.authenticate('jwt', {session : false}, function(err, user, info) {
+        console.log("hahaha");
+        if (err) { return next(err); }
+        if (!user) { return res.send(info).end(); }
+        req.user = user;
+        next();
+    })(req, res, next);
+},privateRouter)
 
 app.use('/',loginAPIs);
-const PORT = process.env.PORT || 1000;
+const PORT = process.env.PORT || 3000;
 
-
-app.use(function(req, res, next) {
-    res.status(404);
-    res.json({message : "404! Resource not found"});
+app.get("*", function (req, res) {
+    res.sendFile('./public/index.html', { root: __dirname });
 });
 
 connectDB()

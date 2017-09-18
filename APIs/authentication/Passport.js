@@ -13,6 +13,8 @@ opts.secretOrKey = config.auth_secret;
 
 module.exports = function(passport) {
     passport.use(new JwtStrategy(opts, function(jwt_payload, done) {
+
+        console.log("here");
         User.findOne({_id: jwt_payload.id}, function(err, user) {
             if (err) {
                 return done(err, false);
