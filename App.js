@@ -27,8 +27,8 @@ privateRouter.use('/private', privateMiniStatementAPIs);
 var publicRouter = express.Router();
 
 var app = express();
-app.use(express.static(__dirname + '/public'));
-app.use('/bower_components', express.static(__dirname + '/bower_components'));
+// app.use(express.static(__dirname + '/public'));
+// app.use('/bower_components', express.static(__dirname + '/bower_components'));
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -69,9 +69,14 @@ app.use('/API', function (req, res, next) {
 app.use('/',loginAPIs);
 const PORT = process.env.PORT || 4000;
 
-app.get("*", function (req, res) {
-    res.sendFile('./public/index.html', { root: __dirname });
-});
+// app.get("*", function (req, res) {
+//     res.sendFile('./public/index.html', { root: __dirname });
+// });
+
+app.use("*", function (req, res, next) {
+    res.status(Response.ResourceNotFound.code);
+    res.json(Response.ResourceNotFound.message);
+})
 
 connectDB()
     .on('error' , function () {
