@@ -15,12 +15,14 @@ var privateUserAPIs = require('./APIs/controllers/private/User.controller');
 var privateCategoryAPIs = require('./APIs/controllers/private/Category.controller');
 var privateTagAPIs = require('./APIs/controllers/private/Tag.controller');
 var privateTransactionAPIs = require('./APIs/controllers/private/Transaction.controller');
+var privateMiniStatementAPIs = require('./APIs/controllers/private/MiniStatement.controller');
 
 var privateRouter = express.Router();
 privateRouter.use('/private', privateUserAPIs);
 privateRouter.use('/private', privateCategoryAPIs);
 privateRouter.use('/private', privateTagAPIs);
 privateRouter.use('/private', privateTransactionAPIs);
+privateRouter.use('/private', privateMiniStatementAPIs);
 
 var publicRouter = express.Router();
 
@@ -38,7 +40,12 @@ app.use('/API', publicRouter);
 
 app.use('/API/private', function (req, res, next) {
     if(req.header("Authorization")){
-        next();
+        if(req.header("Authorization").indexOf("JWT ") === 0){
+            next();
+        } else{
+            res.status(Response.InvalidTokenn.code);
+            res.json(Response.InvalidTokenn.message);
+        }
     } else{
         res.status(Response.NoToken.code);
         res.json(Response.NoToken.message);
@@ -57,7 +64,7 @@ app.use('/API', function (req, res, next) {
             next();
         }
     })(req, res, next);
-},privateRouter)
+},privateRouter);
 
 app.use('/',loginAPIs);
 const PORT = process.env.PORT || 4000;
