@@ -3,13 +3,14 @@
  */
 var route = require('express').Router();
 var User = require('../../models/User/User');
+var Response = require('../../../config/Response');
 
 route.get('/users/:id', function (req, res) {
     User.findOne({_id : req.params.id}, function (err , user1) {
         var user = Object.assign({}, user1._doc);
         if(err) {
-            res.status(500);
-            res.json({message : "Internal server err"})
+            res.status(Response.InternalServerError.code);
+            res.json(Response.InternalServerError.message)
         }
         if(user._id.toString() === req.user._id.toString()) {
             delete user.password;
@@ -32,8 +33,8 @@ route.get('/users',function (req, res) {
         .limit(limit)
         .exec(function (err , users) {
             if(err){
-                res.status(500)
-                res.json({message : "Internal server error"});
+                res.status(Response.InternalServerError.code)
+                res.json(Response.InternalServerError.message);
             }
             res.json(users);
         })

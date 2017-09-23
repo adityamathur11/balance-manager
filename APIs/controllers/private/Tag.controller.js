@@ -4,6 +4,7 @@
 var router = require('express').Router();
 var Tag = require('../../models/Tags/Tags');
 var util = require('../../utils/util');
+var Response = require('../../../config/Response');
 
 router.post('/tag', function (req, res) {
     var postData = Object.assign({}, req.body);
@@ -17,32 +18,33 @@ router.post('/tag', function (req, res) {
                     User : req.user._id
                 }, function (err, tag) {
                     if(tag){
-                        res.status(409);
-                        res.json({message : "Resource conflict"})
+                        res.status(Response.ResourceConflict.code);
+                        res.json(Response.ResourceConflict.message);
                     }else{
 
                         var newTag = new Tag(util.getPostObject(model, postData));
                         newTag.save(function (err , tag) {
                             if(err) {
-                                res.status(500);
-                                res.json({"message" : err})
+                                res.status(Response.InternalServerError.code);
+                                res.json(Response.InternalServerError.message);
                             } else {
-                                res.json({"message" : "success"});
+                                res.status(Response.Created.code)
+                                res.json(Response.Created.message);
                             }
                         })
                     }
                 })
             } else{
-                res.status(400);
-                res.json({"message" : "invalid parameters"})
+                res.status(Response.InvalidParameters.code);
+                res.json(Response.InvalidParameters.message);
             }
         },function () {
-            res.status(500);
-            res.json({message : "Internal server error2"});
+            res.status(Response.InternalServerError.code);
+            res.json(Response.InternalServerError.message);
         })
         .catch(function () {
-            res.status(500);
-            res.json({message : "Internal server error1"})
+            res.status(Response.InternalServerError.code);
+            res.json(Response.InternalServerError.message);
         });
 });
 
@@ -55,8 +57,8 @@ router.get('/tag',function (req, res) {
         .limit(limit)
         .exec(function (err , tags) {
             if(err){
-                res.status(500)
-                res.json({message : "Internal server error"});
+                res.status(Response.InternalServerError.code);
+                res.json(Response.InternalServerError.message);
             }
             res.json(tags);
         })

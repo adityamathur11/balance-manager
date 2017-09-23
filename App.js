@@ -9,7 +9,7 @@ var express = require('express')
     ,morgan = require('morgan');
 mongoose.Promise = global.Promise;
 
-
+var Response = require('./config/Response');
 var loginAPIs = require('./APIs/controllers/public/login');
 var privateUserAPIs = require('./APIs/controllers/private/User.controller');
 var privateCategoryAPIs = require('./APIs/controllers/private/Category.controller');
@@ -35,18 +35,32 @@ app.use(passport.initialize());
 require('./APIs/authentication/Passport')(passport);
 
 app.use('/API', publicRouter);
+
+app.use('/API/private', function (req, res, next) {
+    if(req.header("Authorization")){
+        next();
+    } else{
+        res.status(Response.NoToken.code);
+        res.json(Response.NoToken.message);
+    }
+})
 app.use('/API', function (req, res, next) {
     passport.authenticate('jwt', {session : false}, function(err, user, info) {
-        console.log("hahaha");
-        if (err) { return next(err); }
-        if (!user) { return res.send(info).end(); }
-        req.user = user;
-        next();
+        if (err) {
+            res.status(Response.InternalServerError.code);
+            res.json(Response.InternalServerError.message);
+        }
+        else if (!user) {
+            res.json(info);
+        } else{
+            req.user = user;
+            next();
+        }
     })(req, res, next);
 },privateRouter)
 
 app.use('/',loginAPIs);
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 4000;
 
 app.get("*", function (req, res) {
     res.sendFile('./public/index.html', { root: __dirname });

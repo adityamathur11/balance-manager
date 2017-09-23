@@ -7,6 +7,7 @@ var bcrypt = require('bcrypt');
 var jwt = require('jsonwebtoken');
 var config = require('config');
 var util = require('../../utils/util');
+var Response = require('../../../config/Response');
 
 
 router.post('/login',function (req, res) {
@@ -15,25 +16,25 @@ router.post('/login',function (req, res) {
             if(user){
                 bcrypt.compare(req.body.password, user.password, function (err, result) {
                     if(err){
-                        res.status(500);
-                        res.json({"message" : "Internal server error"})
+                        res.status(Response.InternalServerError.code);
+                        res.json(Response.InternalServerError.message)
                     }
                     if(result === true){
-                        var token = jwt.sign({id : user._id}, config.auth_secret ,{expiresIn: 10080});
-                        res.json({ message: "success", token: 'JWT ' + token });
+                        var token = jwt.sign({id : user._id}, config.auth_secret ,{expiresIn: config.tokenExpireTime});
+                        res.json({token: 'JWT ' + token });
                     } else {
-                        res.status(400);
-                        res.json({message : "Validation failure"});
+                        res.status(Response.InvalidCredentials.code);
+                        res.json(Response.InvalidCredentials.message);
                     }
                 })
             } else{
-                res.status(404);
-                res.json({message : "User not found"});
+                res.status(Response.ResourceNotFound.code);
+                res.json(Response.ResourceNotFound.message);
             }
         })
     } else {
-        res.status(400);
-        res.json({message : "Invalid parameters"});
+        res.status(Response.InvalidParameters.code);
+        res.json(Response.InvalidParameters.message);
     }
 });
 
@@ -45,31 +46,31 @@ router.post('/register',function (req, res) {
                     phone_number: req.body.phone_number
                 },function (err , user) {
                     if(user){
-                        res.status(409);
-                        res.json({message : "Resource conflict"})
+                        res.status(Response.ResourceConflict.code);
+                        res.json(Response.ResourceConflict.code)
                     } else{
                         var newUser = new User(util.getPostObject(model, req.body));
                         newUser.save(function (err , user) {
                             if(err) {
-                                res.status(500);
-                                res.json({"message" : "Internal server error"})
+                                res.status(Response.InternalServerError.code);
+                                res.json(Response.InternalServerError.message);
                             } else {
-                                res.json({"message" : "success"});
+                                res.json(Response.Success.message);
                             }
                         });
                     }
                 })
             }else {
-                res.status(400);
-                res.json({"message" : "invalid parameters"})
+                res.status(Response.InvalidParameters.code);
+                res.json(Response.InvalidParameters.message)
             }
         },function () {
-            res.status(500);
-            res.json({message : "Internal server error"});
+            res.status(Response.InternalServerError.code);
+            res.json(Response.InternalServerError.message);
         })
         .catch(function () {
-            res.status(500);
-            res.json({message : "Internal server error"})
+            res.status(Response.InternalServerError.code);
+            res.json(Response.InternalServerError.message)
         });
 });
 

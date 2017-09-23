@@ -4,6 +4,7 @@
 var router = require('express').Router();
 var Category = require('../../models/Category/Category');
 var util = require('../../utils/util');
+var Response = require('../../../config/Response');
 
 router.post('/category', function (req, res) {
     var postData = Object.assign({}, req.body);
@@ -17,32 +18,33 @@ router.post('/category', function (req, res) {
                     User : req.user._id
                 }, function (err, category) {
                     if(category){
-                        res.status(409);
-                        res.json({message : "Resource conflict"})
+                        res.status(Response.ResourceConflict.code);
+                        res.json(Response.ResourceConflict.message);
                     }else{
 
                         var newCategory = new Category(util.getPostObject(model, postData));
                         newCategory.save(function (err , category) {
                             if(err) {
-                                res.status(500);
-                                res.json({"message" : err})
+                                res.status(Response.InternalServerError.code);
+                                res.json(Response.InternalServerError.message);
                             } else {
-                                res.json({"message" : category});
+                                res.status(Response.Created.code);
+                                res.json(Response.Created.message);
                             }
                         })
                     }
                 })
             } else{
-                res.status(400);
-                res.json({"message" : "invalid parameters"})
+                res.status(Response.InvalidParameters.code);
+                res.json(Response.InvalidParameters.message);
             }
         },function () {
-            res.status(500);
-            res.json({message : "Internal server error2"});
+            res.status(Response.InternalServerError.code);
+            res.json(Response.InternalServerError.message);
         })
         .catch(function () {
-            res.status(500);
-            res.json({message : "Internal server error1"})
+            res.status(Response.InternalServerError.code);
+            res.json(Response.InternalServerError.message);
         });
 });
 
@@ -55,8 +57,8 @@ router.get('/category',function (req, res) {
         .limit(limit)
         .exec(function (err , categories) {
             if(err){
-                res.status(500)
-                res.json({message : "Internal server error"});
+                res.status(Response.InternalServerError.code)
+                res.json(Response.InternalServerError.message);
             }
             res.json(categories);
         })
@@ -67,16 +69,15 @@ router.get('/category/:id',function (req, res) {
     Category.findOne({User : req.user._id, _id : req.params.id})
         .exec(function (err , category) {
             if(err){
-                res.status(500)
-                res.json({message : "Internal server error"});
+                res.status(Response.InternalServerError.code)
+                res.json(Response.InternalServerError.message);
             }
             if(category) {
                 res.json(category);
             } else {
-                res.status(404)
-                res.json({message : "Resource not found"});
+                res.status(Response.ResourceNotFound.code);
+                res.json(Response.ResourceNotFound.message);
             }
-
         })
 });
 
