@@ -16,15 +16,19 @@
     "primitive_type" : "array",
     "element_type" : "string",
     "unique" : true,
-    "required" : true
+    "required" : false
   },
   "remarks" : {
+    "type" : "string",
+    "required" : true
+  },
+  "source_Category" : {
     "type" : "string",
     "required" : false
   },
   "type" : {
-    "type" : "number",
-    "required" : false
+    "type" : "string",
+    "required" : true
   },
   "created_at": {
     "type" : "object",

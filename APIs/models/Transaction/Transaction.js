@@ -20,16 +20,21 @@ var TransactionSchema = new Schema({
         },
         remarks : {
             type : String,
+            required : true
+        },
+        source_Category : {
+            type: Schema.Types.ObjectId,
+            ref: 'Category',
             required : false
         },
         type : {
             type : String,
-            enum: ['CREDIT', 'DEBIT', 'LEDGER', 'DEPOSIT'],
-            default : 'DEBIT'
+            enum: ['CREDIT', 'DEBIT', 'TRANSFER'],
+            required : true
         },
         Tags : {
             type : [{type : Schema.Types.ObjectId , ref : 'Tags'}],
-            required : false
+            default : []
         },
         created_at: {
             type : Date,

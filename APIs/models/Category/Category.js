@@ -16,7 +16,7 @@ var CategorySchema = new Schema({
         },
         type : {
             type : String,
-            enum : ["MONEY", "SPEND"],
+            enum : ["SOURCE", "EXPENSE"],
             required : true
         },
         resolvable : {

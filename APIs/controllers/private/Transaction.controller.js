@@ -7,71 +7,181 @@ var Transaction = require('../../models/Transaction/Transaction');
 var utils = require('../../utils/util');
 var Category = require('../../models/Category/Category');
 var Tags = require('../../models/Tags/Tags');
+var Response = require('../../../config/Response');
 
 router.post('/transaction', function (req, res) {
-    var i = 0;
     var postData = Object.assign({}, req.body);
     postData.User = req.user.id;
-
     utils
         .getModel('Transaction')
         .then(function (model) {
-
             if(utils.validateInputs(model, postData)){
-                var promises = [];
+                switch(postData.type){
+                    case "CREDIT" :
+                        console.log("1");
+                        Category
+                            .findOne({_id : postData.Category ,User : req.user.id})
+                            .exec(function (err, category) {
+                                if(err){
+                                    res.status(Response.InternalServerError.code);
+                                    res.json(Response.InternalServerError.message);
+                                    return;
+                                }
+                                if(category){
+                                    console.log("2");
+                                    if(category.type === "EXPENSE"){
+                                        res.status(Response.InvalidParameters.code);
+                                        res.json(Response.InvalidParameters.message);
+                                        return;
+                                    } else{
+                                        var newTransaction = new Transaction({
+                                            amount : postData.amount,
+                                            User : req.user.id,
+                                            Category : postData.Category,
+                                            type : "CREDIT",
+                                            remarks : postData.remarks
+                                        });
 
-                var categoryPromise = Category.findOne({_id  : postData.Category}).exec();
+                                        newTransaction.save(function (err, data) {
+                                                if(err) {
+                                                    res.status(Response.InternalServerError.code);
+                                                    res.json(Response.InternalServerError.message);
+                                                    return;
+                                                } else {
+                                                    res.status(Response.Created.code);
+                                                    res.json(Response.Created.message);
+                                                    return;
+                                                }
+                                            })
+                                    }
+                                } else{
+                                    res.status(Response.InvalidParameters.code);
+                                    res.json(Response.InvalidParameters.message);
+                                    return;
+                                }
+                            });
+                        break;
+                    case "DEBIT"  :
+                        var promises = [];
+                        var sourceCategoryPromise = Category.findOne({_id : postData.source_Category, User : req.user.id}).exec();
+                        var transactionCategoryPromise = Category.findOne({_id : postData.Category, User : req.user.id}).exec();
+                        promises.push(sourceCategoryPromise);
+                        promises.push(transactionCategoryPromise);
 
-                promises.push(categoryPromise);
+                        if(postData.Tags){
+                            for(var j = 0 ; j < postData.Tags.length; j++){
+                                var tagPromise = Tags.findOne({_id : postData.Tags[j].id, User : req.user.id}).exec();
+                                promises.push(tagPromise);
+                            }
+                        }
 
-                if(postData.Tags){
-                    postData.Tags.forEach(function (element) {
-                        var tagPromise = Tags.findOne({_id : element}).exec();
-                        promises.push(tagPromise);
-                    });
+                        Promise.all(promises)
+                            .then(function (values) {
+                            values.forEach(function (value) {
+                                if(value === null){
+                                    res.status(Response.InvalidParameters.code);
+                                    res.json(Response.InvalidParameters.message);
+                                    return;
+                            }});
+                            if(values[0].type !== "SOURCE" || values[1].type !== "EXPENSE"){
+                                res.status(Response.InvalidParameters.code);
+                                res.json(Response.InvalidParameters.message);
+                                return;
+                            }
+
+                            var newTransaction = new Transaction({
+                                amount : postData.amount,
+                                User : req.user.id,
+                                Category : postData.Category,
+                                Tags : postData.Tags,
+                                source_Category : postData.source_Category,
+                                type : "DEBIT",
+                                remarks : postData.remarks
+                            });
+
+                            newTransaction.save(function (err, data) {
+                                if(err) {
+                                    res.status(Response.InternalServerError.code);
+                                    res.json(Response.InternalServerError.message);
+                                    return;
+                                } else {
+                                    res.status(Response.Created.code);
+                                    res.json(Response.Created.message);
+                                    return;
+                                }
+                            })
+
+                        });
+
+                        break;
+                    case "TRANSFER" :
+                        var promises = [];
+                        var sourceCategoryPromise = Category.findOne({_id : postData.source_Category, User : req.user.id}).exec();
+                        var transactionCategoryPromise = Category.findOne({_id : postData.Category, User : req.user.id}).exec();
+                        promises.push(sourceCategoryPromise);
+                        promises.push(transactionCategoryPromise);
+
+                        Promise.all(promises)
+                            .then(function (values) {
+                                values.forEach(function (value) {
+                                    if(value === null){
+                                        res.status(Response.InvalidParameters.code);
+                                        res.json(Response.InvalidParameters.message);
+                                        return;
+                                    }});
+                                if(values[0].type !== "SOURCE" || values[1].type !== "SOURCE"){
+                                    res.status(Response.InvalidParameters.code);
+                                    res.json(Response.InvalidParameters.message);
+                                    return;
+                                }
+                                if(values[0]._id.toString() === values[1]._id.toString() ){
+                                    res.status(Response.InvalidParameters.code);
+                                    res.json(Response.InvalidParameters.message);
+                                    return;
+                                }
+
+                                var newTransaction = new Transaction({
+                                    amount : postData.amount,
+                                    User : req.user.id,
+                                    Category : postData.Category,
+                                    source_Category : postData.source_Category,
+                                    type : "TRANSFER",
+                                    remarks : postData.remarks
+                                });
+
+                                newTransaction.save(function (err, data) {
+                                    if(err) {
+                                        res.status(Response.InternalServerError.code);
+                                        res.json(Response.InternalServerError.message);
+                                        return;
+                                    } else {
+                                        res.status(Response.Created.code);
+                                        res.json(Response.Created.message);
+                                        return;
+                                    }
+                                })
+
+                            });
+
+                        return;
+                        break;
+                    default :
+                        res.status(Response.InternalServerError.code);
+                        res.json(Response.InternalServerError.message);
+                        return;
                 }
 
 
-                Promise
-                    .all(promises)
-                    .then(function (value) {
-                        var flag = false;
-                        value.forEach(function (element) {
-                           if(element=== null){
-                               flag = true;
-                           }
-                        });
-
-                      if(flag){
-                          res.status(400);
-                          res.json({"message" : "invalid parameters"});
-                      } else {
-                          var new_Transaction = new Transaction(utils.getPostObject(model, postData));
-
-                          new_Transaction.save(function (err , data) {
-                              if(err){
-
-                                  res.status(500);
-                                  res.json({"message" : "Internal server err"});
-                              } else{
-
-                                  res.json({message : "success"})
-                              }
-                          })
-                      }
-                    })
-                    .catch(function () {
-
-                        res.status(400);
-                        res.json({"message" : "invalid parameters"});
-                    })
-
-            } else {
-                res.status(400);
-                res.json({"message" : "invalid parameters"});
+            } else{
+                res.status(Response.InvalidParameters.code);
+                res.json(Response.InvalidParameters.message);
             }
-        })
-});
+        }, function () {
+            res.status(Response.InternalServerError.code);
+            res.json(Response.InternalServerError.message);
+        });
+
+})
 
 
 router.get('/transaction', function (req, res) {
@@ -80,6 +190,7 @@ router.get('/transaction', function (req, res) {
         .populate('User', '-password -created_at -updated_at')
         .populate('Tags', '-user -created_at -updated_at')
         .populate('Category' , '-user -created_at -updated_at')
+        .populate('source_Category' , '-user -created_at -updated_at')
         .exec(function (err, data) {
             if(err){
                 res.json({err : err})
@@ -120,6 +231,7 @@ router.get('/transaction/category', function (req, res) {
                     .populate('User', '-password -created_at -updated_at')
                     .populate('Tags', '-user -created_at -updated_at')
                     .populate('Category' , '-user -created_at -updated_at')
+                    .populate('source_Category' , '-user -created_at -updated_at')
                     .exec();
 
                     promises.push(promise);
