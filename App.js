@@ -15,7 +15,7 @@ var privateUserAPIs = require('./APIs/controllers/private/User.controller');
 var privateCategoryAPIs = require('./APIs/controllers/private/Category.controller');
 var privateTagAPIs = require('./APIs/controllers/private/Tag.controller');
 var privateTransactionAPIs = require('./APIs/controllers/private/Transaction.controller');
-var privateMiniStatementAPIs = require('./APIs/controllers/private/MiniStatement.controller');
+var privateMiniStatementAPIs = require('./APIs/controllers/private/MiniSatement.controller');
 
 var privateRouter = express.Router();
 privateRouter.use('/private', privateUserAPIs);

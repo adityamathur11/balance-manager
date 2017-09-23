@@ -18,7 +18,6 @@ router.post('/transaction', function (req, res) {
             if(utils.validateInputs(model, postData)){
                 switch(postData.type){
                     case "CREDIT" :
-                        console.log("1");
                         Category
                             .findOne({_id : postData.Category ,User : req.user.id})
                             .exec(function (err, category) {
@@ -28,7 +27,6 @@ router.post('/transaction', function (req, res) {
                                     return;
                                 }
                                 if(category){
-                                    console.log("2");
                                     if(category.type === "EXPENSE"){
                                         res.status(Response.InvalidParameters.code);
                                         res.json(Response.InvalidParameters.message);
@@ -70,14 +68,15 @@ router.post('/transaction', function (req, res) {
 
                         if(postData.Tags){
                             for(var j = 0 ; j < postData.Tags.length; j++){
-                                var tagPromise = Tags.findOne({_id : postData.Tags[j].id, User : req.user.id}).exec();
+                                var tagPromise = Tags.findOne({_id : postData.Tags[j], User : req.user.id}).exec();
                                 promises.push(tagPromise);
+
                             }
                         }
 
                         Promise.all(promises)
                             .then(function (values) {
-                            values.forEach(function (value) {
+                                values.forEach(function (value) {
                                 if(value === null){
                                     res.status(Response.InvalidParameters.code);
                                     res.json(Response.InvalidParameters.message);
@@ -111,7 +110,11 @@ router.post('/transaction', function (req, res) {
                                 }
                             })
 
-                        });
+                        },function () {
+                                res.status(Response.InternalServerError.code);
+                                res.json(Response.InternalServerError.message);
+                                return;
+                            });
 
                         break;
                     case "TRANSFER" :
@@ -188,9 +191,9 @@ router.get('/transaction', function (req, res) {
     Transaction
         .find({User : req.user._id})
         .populate('User', '-password -created_at -updated_at')
-        .populate('Tags', '-user -created_at -updated_at')
-        .populate('Category' , '-user -created_at -updated_at')
-        .populate('source_Category' , '-user -created_at -updated_at')
+        .populate('Tags', '-User -created_at -updated_at')
+        .populate('Category' , '-User -created_at -updated_at')
+        .populate('source_Category' , '-User -created_at -updated_at')
         .exec(function (err, data) {
             if(err){
                 res.json({err : err})
@@ -243,7 +246,6 @@ router.get('/transaction/category', function (req, res) {
                         var result = [];
                         values.forEach(function (data) {
                             if(data){
-                                console.log(data)
                                 var item = {};
                                 item.category = data[0].Category;
                                 item.transactions = data;

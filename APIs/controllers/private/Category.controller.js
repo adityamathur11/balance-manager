@@ -53,6 +53,7 @@ router.get('/category',function (req, res) {
     var limit = req.query.limit ? parseInt(req.query.limit) : 10;
 
     Category.find({User : req.user._id})
+        .populate('User', '-password -created_at -updated_at')
         .skip(skip)
         .limit(limit)
         .exec(function (err , categories) {

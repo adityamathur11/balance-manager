@@ -21,7 +21,7 @@ var CategorySchema = new Schema({
         },
         resolvable : {
             type : Boolean,
-            default : false
+            required : false
         },
         created_at: {
             type : Date,
