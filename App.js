@@ -27,6 +27,9 @@ privateRouter.use('/private', privateMiniStatementAPIs);
 var publicRouter = express.Router();
 
 var app = express();
+var cors = require('cors');
+app.use(cors());
+
 // app.use(express.static(__dirname + '/public'));
 // app.use('/bower_components', express.static(__dirname + '/bower_components'));
 
