@@ -61,6 +61,7 @@ app.use('/API', function (req, res, next) {
             res.json(Response.InternalServerError.message);
         }
         else if (!user) {
+            res.status(Response.InvalidTokenn.code);
             res.json(info);
         } else{
             req.user = user;
