@@ -1,5 +1,5 @@
 {
   "db" : "mongodb://localhost:27017/balance-manager",
   "auth_secret" : "sampleSecret",
-  "tokenExpireTime" : 30000
+  "tokenExpireTime" : 31104000
 }

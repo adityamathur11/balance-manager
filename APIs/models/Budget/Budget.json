@@ -1,0 +1,22 @@
+{
+  "User" : {
+    "type" : "string",
+    "required" : true
+  },
+  "Category" : {
+    "type" : "string",
+    "required" : true
+  },
+  "amount" : {
+    "type" : "number",
+    "required" : true
+  },
+  "created_at" : {
+    "type" : "object",
+    "required" : false
+  },
+  "updated_at" : {
+    "type" : "object",
+    "required" : false
+  }
+}

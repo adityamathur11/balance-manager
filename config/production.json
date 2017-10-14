@@ -1,5 +1,5 @@
 {
   "db" : "mongodb://aditya:aaditya11@ds141024.mlab.com:41024/balance-manager",
   "auth_secret" : "sampleSecret",
-  "tokenExpireTime" : 30000
+  "tokenExpireTime" : 604800
 }

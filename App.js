@@ -16,6 +16,7 @@ var privateCategoryAPIs = require('./APIs/controllers/private/Category.controlle
 var privateTagAPIs = require('./APIs/controllers/private/Tag.controller');
 var privateTransactionAPIs = require('./APIs/controllers/private/Transaction.controller');
 var privateMiniStatementAPIs = require('./APIs/controllers/private/MiniSatement.controller');
+var privateBudgetAPIs = require('./APIs/controllers/private/Budget.controller');
 
 var privateRouter = express.Router();
 privateRouter.use('/private', privateUserAPIs);
@@ -23,6 +24,7 @@ privateRouter.use('/private', privateCategoryAPIs);
 privateRouter.use('/private', privateTagAPIs);
 privateRouter.use('/private', privateTransactionAPIs);
 privateRouter.use('/private', privateMiniStatementAPIs);
+privateRouter.use('/private', privateBudgetAPIs);
 
 var publicRouter = express.Router();
 
@@ -71,11 +73,7 @@ app.use('/API', function (req, res, next) {
 },privateRouter);
 
 app.use('/',loginAPIs);
-const PORT = process.env.PORT || 4000;
-
-// app.get("*", function (req, res) {
-//     res.sendFile('./public/index.html', { root: __dirname });
-// });
+const PORT = process.env.PORT || process.argv[2] || 3121;
 
 app.use("*", function (req, res, next) {
     res.status(Response.ResourceNotFound.code);

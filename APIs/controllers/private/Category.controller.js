@@ -51,8 +51,15 @@ router.post('/category', function (req, res) {
 router.get('/category',function (req, res) {
     var skip = req.query.skip ? parseInt(req.query.skip) : 0;
     var limit = req.query.limit ? parseInt(req.query.limit) : 10;
+    var type = req.query.type ? req.query.type : null;
 
-    Category.find({User : req.user._id})
+    var filter = {User : req.user._id};
+
+    if(type){
+        filter["type"] = type;
+    }
+
+    Category.find(filter)
         .populate('User', '-password -created_at -updated_at')
         .skip(skip)
         .limit(limit)
